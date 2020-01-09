@@ -31,6 +31,18 @@ SELECT * FROM cariages_avg_view WHERE [departureCount] > (SELECT AVG([departureC
 
 **********************************************************************************************************************
 
+GO
+DROP VIEW cariages_min_max_distance_view
+GO
+CREATE VIEW cariages_min_max_distance_view ([driverId], [distance])
+AS SELECT (driver1.lastName + ' ' + driver1.firstName + ' ' + driver1.patronymic), AVG(distance)
+FROM [Cariages].[dbo].[Journal] AS journal1
+LEFT JOIN
+[Cariages].[dbo].[Driver] AS driver1 
+ON journal1.driverId = driver1.id
+WHERE DATEPART(m, [departure]) = DATEPART(m, DATEADD(m, -1, getdate())) GROUP BY (driver1.lastName + ' ' + driver1.firstName + ' ' + driver1.patronymic);
+
+SELECT * FROM cariages_min_max_distance_view ORDER BY distance DESC;
 
 
 **********************************************************************************************************************
@@ -41,14 +53,7 @@ SELECT * FROM cariages_avg_view WHERE [departureCount] > (SELECT AVG([departureC
 **********************************************************************************************************************
 
 
-**********************************************************************************************************************
 
-
-**********************************************************************************************************************
-
-
-
-**********************************************************************************************************************
 
 
 
