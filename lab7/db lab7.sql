@@ -21,13 +21,13 @@ ON result0.driverId = d.id;
 **********************************************************************************************************************
 
 GO
-DROP VIEW cariagesAvg
+DROP VIEW cariages_avg_view
 GO
-CREATE VIEW cariagesAvg ([departure], [departureCount])
+CREATE VIEW cariages_avg_view ([departure], [departureCount])
 AS SELECT departure, CAST(COUNT(departure) as decimal(10,5)) FROM [Cariages].[dbo].[Journal] GROUP BY departure
 
-SELECT * FROM cariagesAvg
-SELECT * FROM cariagesAvg WHERE [departureCount] > (SELECT AVG([departureCount]) FROM cariagesAvg)
+SELECT * FROM cariages_avg_view
+SELECT * FROM cariages_avg_view WHERE [departureCount] > (SELECT AVG([departureCount]) FROM cariages_avg_view)
 
 **********************************************************************************************************************
 
