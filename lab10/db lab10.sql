@@ -1,4 +1,7 @@
 **********************************************************************************************************************
+DROP TRIGGER journalCheck
+DROP TRIGGER checkArrival
+DROP TRIGGER checkDeparture
 
 USE [Cariages]
 GO
@@ -50,6 +53,8 @@ END
 SELECT * FROM [dbo].[audit_journal];
 
 DROP TRIGGER journalCheck
+DROP TRIGGER checkArrival
+DROP TRIGGER checkDeparture
 DROP table [dbo].[audit_journal]
 
 DELETE FROM [dbo].[audit_journal]
@@ -63,6 +68,66 @@ WHERE [id] = 43
 
 DROP TRIGGER journalCheck
 DROP TRIGGER checkArrival
+DROP TRIGGER checkDeparture
+
+USE [Cariages]
+GO
+
+GO
+CREATE TRIGGER checkDeparture ON dbo.Journal
+AFTER INSERT, UPDATE
+AS
+BEGIN
+DECLARE @departure SMALLDATETIME
+SET @departure = (SELECT departure FROM inserted)
+IF (8 = datepart(m, @departure) AND 31 = datepart(d, @departure))
+BEGIN
+ROLLBACK TRANSACTION
+PRINT 'День дальнобойщика, вы не можете задавать в БД запись на этот день!'
+END
+ELSE PRINT 'Строка вставлена/изменена'
+END
+
+select departure from Journal;
+datepart(@departure, getdate())
+
+DROP TRIGGER journalCheck
+DROP TRIGGER checkArrival
+DROP TRIGGER checkDeparture
+
+USE [Cariages]
+GO
+
+INSERT INTO [dbo].[Journal]
+           ([carId]
+           ,[driverId]
+           ,[departure]
+           ,[weight]
+           ,[distance]
+           ,[arrival]
+           ,[departureDate]
+           ,[deparureTime]
+           ,[arrivalDate]
+           ,[arrivalTime])
+     VALUES
+           (4
+           ,1
+           ,'2019-08-30 11:00:00.000'
+           ,144.0
+           ,244.0
+           ,'2019-08-30 20:00:00.000'
+           ,'2019-08-30'
+           ,'11:00:00.000'
+           ,'2019-08-30'
+           ,'20:00:00.000')
+GO
+
+
+**********************************************************************************************************************
+
+DROP TRIGGER journalCheck
+DROP TRIGGER checkArrival
+DROP TRIGGER checkDeparture
 
 USE [Cariages]
 GO
@@ -84,6 +149,7 @@ END
 
 DROP TRIGGER journalCheck
 DROP TRIGGER checkArrival
+DROP TRIGGER checkDeparture
 
 USE [Cariages]
 GO
