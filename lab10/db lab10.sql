@@ -181,7 +181,20 @@ GO
 
 **********************************************************************************************************************
 
+DROP TRIGGER journalCheck
+DROP TRIGGER checkArrival
+DROP TRIGGER checkDeparture
+DROP TRIGGER prevent_drop_triggers
 
+USE [Cariages]
+GO
+
+create trigger prevent_drop_trigger on database
+for drop_trigger
+as print 'For removing trigger its necesery to disable prevent_drop_triggers'
+rollback
+
+DROP TRIGGER checkDeparture
 
 **********************************************************************************************************************
 
