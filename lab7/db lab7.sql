@@ -47,8 +47,23 @@ SELECT * FROM cariages_min_max_distance_view ORDER BY distance DESC;
 
 **********************************************************************************************************************
 
+GO
+DROP VIEW cariages_car_count_view
+GO
+CREATE VIEW cariages_car_count_view ([name], departureCount)
+AS
+SELECT (b.brand + ' ' + b.model + ' ' + result2.number), COUNT(departure) as departureCount FROM [Cariages].[dbo].[Brand] AS b
+LEFT JOIN
+(SELECT car1.brandId, car1.number, journal1.*
+FROM [Cariages].[dbo].[Journal] AS journal1
+LEFT JOIN
+[Cariages].[dbo].[Car] AS car1
+ON journal1.carId = car1.id) AS result2
+ON result2.brandId = b.id
+WHERE DATEPART(m, result2.departure) = DATEPART(m, DATEADD(m, -1, getdate()))  GROUP BY (b.brand + ' ' + b.model + ' ' + result2.number)
 
-
+SELECT * FROM cariages_car_count_view;
+SELECT * FROM cariages_car_count_view WHERE departureCount = (SELECT MAX(departureCount) FROM cariages_car_count_view);
 
 **********************************************************************************************************************
 
